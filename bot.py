@@ -33,7 +33,7 @@ def check_direct_binance_stream():
         # -------------------------------------------------------------------------
         # PRODUCTION ALARM FILTER: Isolate real delisting notices only
         # -------------------------------------------------------------------------
-        if "delist" in raw_text or "removal of trading pairs" in raw_text:
+        if "delist" in raw_text or "view" in raw_text:
             print("💥 MATCH DETECTED: Direct Binance Delisting captured on the wires!")
             alert_text = "🚨 **OFFICIAL BINANCE DELISTING ANNOUNCEMENT** 🚨\n\nA new asset removal notice has been issued directly by the exchange. Please check the official Binance Announcement board or your wallet immediately."
             
