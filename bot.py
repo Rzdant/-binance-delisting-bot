@@ -37,7 +37,7 @@ def check_telegram_feed():
             clean_text = clean_text.replace('<br/>', '\n').strip()
             
             # STIRCT FILTER: Check for your delisting target words
-            if "delist" in clean_text.lower() or "removal" in clean_text.lower():
+            if "binance" in clean_text.lower() or "removal" in clean_text.lower():
                 print("💥 MATCH FOUND: Processing alert transmission...")
                 
                 alert_msg = f"🚨 **NEW BINANCE DELISTING DETECTED** 🚨\n\n{clean_text}"
