@@ -1,41 +1,33 @@
 import sys
-import os
 import json
 import urllib.request
 
 def process_and_send():
-    token = os.environ.get("TELEGRAM_TOKEN")
-    if not token:
-        print("Missing token.")
-        return
-    token = token.strip()
-    
-    raw_html = sys.stdin.read()
+    # Fully adjusted with your real API token string
+    TOKEN = "8969427446:AAFXHvaggfzAJzV2B1pTKc-vWH7u-w5HaXM"
     channel_id = "-1003704962476"
-    tg_url = f"https://telegram.org{token}/sendMessage"
-
-    # Print a tiny chunk to the log so we can see the data layout
-    print(f"Scraper Data Stream Check (First 150 chars): {raw_html[:150]}")
-
-    # BROAD VERIFICATION FILTER: Check for normal keywords
-    if "delist" in raw_html.lower() or "binance" in raw_html.lower() or "announcement" in raw_html.lower():
-        alert_text = "🚨 **BINANCE SYSTEM ONLINE** 🚨\n\nYour keyword filter successfully matched text in the live database! The connection is 100% established."
+    tg_url = f"https://telegram.org{TOKEN}/sendMessage"
+    
+    # Read text straight from the curl terminal pipe
+    raw_html = sys.stdin.read()
+    print(f"Connection check. Data block length: {len(raw_html)} characters.")
+    
+    # STRICT PRODUCTION FILTER: Tracks delistings exclusively
+    if "delist" in raw_html.lower() or "removal" in raw_html.lower():
+        alert_text = "🚨 **NEW BINANCE DELISTING ANNOUNCEMENT** 🚨\n\nA new trading pair removal announcement was detected. Please check the official Binance Announcement board immediately."
         
-        payload = {"chat_id": channel_id, "text": alert_text, "parse_mode": "Markdown"}
+        payload = {
+            "chat_id": channel_id,
+            "text": alert_text,
+            "parse_mode": "Markdown"
+        }
+        
         data_bytes = json.dumps(payload).encode('utf-8')
         req = urllib.request.Request(tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
         with urllib.request.urlopen(req, timeout=15) as resp:
-            print(f"Alert transmitted to Telegram! Server code: {resp.getcode()}")
+            print(f"Alert successfully broadcasted! Server code: {resp.getcode()}")
     else:
-        # FORCED FALLBACK: If keywords are hidden, force send a confirmation message anyway
-        print("Keywords not found in raw block, executing emergency notification override...")
-        fallback_text = "⚠️ **BOT TESTING PIPELINE OVERRIDE** ⚠️\n\nThe script ran successfully without errors, but the website text is hidden behind Javascript. Telegram connection is verified."
-        
-        payload = {"chat_id": channel_id, "text": fallback_text, "parse_mode": "Markdown"}
-        data_bytes = json.dumps(payload).encode('utf-8')
-        req = urllib.request.Request(tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            print(f"Emergency text transmitted! Server code: {resp.getcode()}")
+        print("Scan complete. Zero delisting matches found in this text string.")
 
 if __name__ == "__main__":
     process_and_send()
