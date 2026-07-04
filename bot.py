@@ -9,6 +9,7 @@ def send_test_message():
     print("Attempting to send test message...")
     message = "🔔 **BINANCE BOT TEST** 🔔\n\nYour GitHub Automation is working perfectly! This is a forced test message."
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
+
     payload = {"chat_id": CHANNEL_ID, "text": message, "parse_mode": "Markdown"}
     
     try:
