@@ -31,7 +31,7 @@ def check_direct_binance_stream():
         # -------------------------------------------------------------------------
         # DEFINITIVE VERIFICATION TRIGGER: Uses "view" to force an instant match
         # -------------------------------------------------------------------------
-        if "delist" in raw_text or "view" in raw_text:
+        if "delist" in raw_text or "binance" in raw_text:
             print("💥 MATCH FOUND: Executing strict JSON delivery payload...")
             
             # CRITICAL FIX: Clean text layout with absolutely zero un-escaped markdown formatting
