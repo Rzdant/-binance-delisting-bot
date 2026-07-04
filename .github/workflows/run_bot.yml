@@ -1,0 +1,26 @@
+name: Binance Delisting Monitor
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Automatically runs every 10 minutes, 24/7
+  workflow_dispatch:        # Allows you to click a button to run it manually
+
+jobs:
+  check-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        run: python bot.py
