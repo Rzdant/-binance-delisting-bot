@@ -2,7 +2,7 @@ name: Binance Delisting Monitor
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Automatically runs every 10 minutes, 24/7
+    - cron: '*/5 * * * *'  # Automatically runs every 5 minutes, 24/7
   workflow_dispatch:        # Allows you to click a button to run it manually
 
 jobs:
