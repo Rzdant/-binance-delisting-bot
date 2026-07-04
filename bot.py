@@ -3,7 +3,7 @@ import json
 import urllib.request
 
 def check_binance_delistings():
-    print("🚀 Initializing Cloudflare-Proof Binance Monitor...")
+    print("🚀 Initializing Firewall-Proof Query Engine...")
     
     # Secure token extraction
     token = os.environ.get("TELEGRAM_TOKEN")
@@ -14,46 +14,42 @@ def check_binance_delistings():
     
     channel_id = "-1003704962476"
     
-    # We target the official API catalog endpoint to completely bypass Cloudflare blocks
-    api_list_url = "https://binance.com"
+    # BULLETPROOF GET ENDPOINT: Avoids POST payload filters entirely
+    catalog_url = "https://binance.com"
     tg_url = f"https://telegram.org{token}/sendMessage"
     
-    # Strict API Payload Request Structure
-    payload_data = {
-        "catalogId": 49, # Catalog 49 explicitly targets the "Latest Binance News" database
-        "pageNo": 1,
-        "pageSize": 10
-    }
-    
-    data_bytes = json.dumps(payload_data).encode('utf-8')
-    
-    # Authentic headers mimic a normal browser request
+    # Real-world browser signatures prevent cloud filtering
     headers = {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
         "Lang": "en"
     }
 
     try:
-        # Request the database directly
-        req = urllib.request.Request(api_list_url, data=data_bytes, headers=headers, method="POST")
+        # Request data stream using standard GET protocol
+        req = urllib.request.Request(catalog_url, headers=headers, method="GET")
         with urllib.request.urlopen(req, timeout=15) as response:
-            raw_json = json.loads(response.read().decode('utf-8'))
+            raw_data = response.read().decode('utf-8')
             
-        articles = raw_json.get("data", {}).get("catalogs", [{}])[0].get("articles", [])
-        print(f"Successfully processed {len(articles)} announcements from Binance backend.")
+        # Parse standard JSON data block
+        raw_json = json.loads(raw_data)
+        articles = raw_json.get("data", {}).get("articles", [])
+        
+        print(f"Successfully connected to backend. Retrieved {len(articles)} active announcements.")
         
         for article in articles:
             title = article.get("title", "")
             code = article.get("code", "")
-            # Reconstruct the direct link format using the distinct database article string code
+            
+            # Reconstruct the direct hyperlink using Binance CMS parameters
             link = f"https://www.binance.com/en/support/announcement/{code}"
             title_lower = title.lower()
             
-            # BROAD PRODUCTION FILTER: Tracks "delist", "removal", "notice", and "binance"
-            # This ensures we get data right away to verify the connection works.
-            if any(word in title_lower for word in ["delist", "removal", "notice", "binance"]):
-                message_text = f"🚨 **BINANCE ANNOUNCEMENT ALERT** 🚨\n\n{title}\n\n🔗 {link}"
+            # STABLE PRODUCTION FILTER: Checks for delistings exclusively
+            # Triggers on words like "delist", "removal of trading pairs", etc.
+            if "delist" in title_lower or "removal" in title_lower:
+                message_text = f"🚨 **BINANCE DELISTING ALERT** 🚨\n\n{title}\n\n🔗 {link}"
                 
                 tg_payload = {
                     "chat_id": channel_id,
