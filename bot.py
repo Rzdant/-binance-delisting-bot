@@ -13,7 +13,7 @@ def process_and_send():
     print(f"Connection check. Data block length: {len(raw_html)} characters.")
     
     # STRICT PRODUCTION FILTER: Tracks delistings exclusively
-    if "delist" in raw_html.lower() or "removal" in raw_html.lower():
+    if "vip" in raw_html.lower() or "airdrop" in raw_html.lower():
         alert_text = "🚨 **NEW BINANCE DELISTING ANNOUNCEMENT** 🚨\n\nA new trading pair removal announcement was detected. Please check the official Binance Announcement board immediately."
         
         payload = {
