@@ -22,7 +22,7 @@ def check_direct_binance_feed():
 
     # STRICT DIRECT PRODUCTION FILTER
     # Scans the official text data blocks directly for asset delisting indicators
-    if "binance" in raw_data.lower() or "view" in raw_data.lower():
+    if "delist" in raw_data.lower() or "view" in raw_data.lower():
         print("💥 MATCH DETECTED: Direct Binance Delisting captured on the wires!")
         alert_text = "🚨 **OFFICIAL BINANCE DELISTING ANNOUNCEMENT** 🚨\n\nA new asset removal notice has been issued directly by the exchange. Please check the official Binance Announcement board or your wallet immediately."
         
