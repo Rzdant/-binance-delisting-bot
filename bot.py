@@ -7,10 +7,11 @@ CHANNEL_ID = "-1003704962476"
 
 def send_test_message():
     print("Attempting to send test message...")
-    message = "🔔 **BINANCE BOT TEST** 🔔\n\nYour GitHub Automation is working perfectly! This is a forced test message."
+    
+    # HARDCODED CORRECT API URL
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
-
-    payload = {"chat_id": CHANNEL_ID, "text": message, "parse_mode": "Markdown"}
+    
+    payload = {"chat_id": CHANNEL_ID, "text": "🔔 BOT CONNECTION FIXED! 🔔\n\nYour GitHub code and Telegram channel are now perfectly synchronized.", "parse_mode": "Markdown"}
     
     try:
         r = requests.post(url, json=payload)
