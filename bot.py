@@ -5,14 +5,15 @@ import urllib.request
 def check_direct_binance_stream():
     print("🚀 Connecting natively to official Binance Announcement feed...")
     
-    # 100% verified credentials
+    # Fully verified credentials
     TOKEN = "8969427446:AAFXHvaggfzAJzV2B1pTKc-vWH7u-w5HaXM"
-    channel_id = "-1003704962476"
+    
+    # FIXED CHANNEL HANDLE: Bypasses numeric ID delivery blocks
+    channel_id = "@del_bin_phy"
     
     # Target endpoint definitions
     target_url = "https://t.me"
     
-    # SAFE STRING SEPARATION: Prevents Python's URL parsing engine from crashing on colons
     api_domain = "https://telegram.org"
     api_path = "/bot" + TOKEN + "/sendMessage"
     final_tg_url = api_domain + api_path
@@ -30,14 +31,15 @@ def check_direct_binance_stream():
         print(f"Data stream acquired successfully. Character total: {len(raw_text)}")
         
         # -------------------------------------------------------------------------
-        # DEFINITIVE VERIFICATION TRIGGER: Uses "view" to force a match for this test
+        # PRODUCTION ALARM FILTER: Isolate real delisting notices only
         # -------------------------------------------------------------------------
-        if "delist" in raw_text or "view" in raw_text:
-            print("💥 KEYWORD FOUND IN DIRECT FEED: Launching message packet...")
+        if "delist" in raw_text or "removal of trading pairs" in raw_text:
+            print("💥 MATCH DETECTED: Direct Binance Delisting captured on the wires!")
+            alert_text = "🚨 **OFFICIAL BINANCE DELISTING ANNOUNCEMENT** 🚨\n\nA new asset removal notice has been issued directly by the exchange. Please check the official Binance Announcement board or your wallet immediately."
             
             payload = {
                 "chat_id": channel_id,
-                "text": "🚨 **BINANCE MONITOR ONLINE** 🚨\n\nYour automated direct feed tracking script has run successfully without errors. Connection verified!",
+                "text": alert_text,
                 "parse_mode": "Markdown"
             }
             
@@ -45,9 +47,9 @@ def check_direct_binance_stream():
             tg_req = urllib.request.Request(final_tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
             
             with urllib.request.urlopen(tg_req, timeout=15) as resp:
-                print(f"Broadcast Complete! Telegram Status Code: {resp.getcode()}")
+                print(f"Alert successfully broadcasted! Status Code: {resp.getcode()}")
         else:
-            print("Scan complete. Zero matching keywords found in this stream window.")
+            print("Scan complete. Zero active delisting pairs matched in this sequence.")
 
     except Exception as e:
         print(f"Pipeline Execution Error: {e}")
