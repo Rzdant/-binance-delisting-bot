@@ -15,7 +15,7 @@ def process_and_send():
     tg_url = f"https://telegram.org{token}/sendMessage"
 
     # Search for standard Binance delisting strings natively
-    if "binance" in raw_html.lower() or "removal of trading pairs" in raw_html.lower():
+    if "Binance" in raw_html.lower() or "removal of trading pairs" in raw_html.lower():
         # Clean formatting to find target titles inside HTML structures
         alert_text = "🚨 **NEW BINANCE DELISTING ANNOUNCEMENT DETECTED** 🚨\n\nPlease check the official Binance Announcement board immediately."
         
