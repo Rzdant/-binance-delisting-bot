@@ -1,64 +1,47 @@
 import os
 import json
 import urllib.request
-import urllib.parse
 
-def check_telegram_feed():
-    print("🚀 Connecting to official Binance Telegram Announcement stream...")
+def check_telegram_stream():
+    print("🚀 Connecting to live Telegram Announcement server...")
     
-    # Your verified bot credentials
+    # Hardcoded with your verified bot parameters
     TOKEN = "8969427446:AAFXHvaggfzAJzV2B1pTKc-vWH7u-w5HaXM"
     channel_id = "-1003704962476"
     
-    # We scrape the official Telegram web preview for Binance's broadcast channel
+    # Target URL and Telegram endpoint
     target_url = "https://t.me"
-    tg_api_url = f"https://telegram.org{TOKEN}/sendMessage"
+    tg_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    }
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
     try:
-        # Fetch the live stream text layout
+        # Download the entire raw page text layout
         req = urllib.request.Request(target_url, headers=headers, method="GET")
         with urllib.request.urlopen(req, timeout=15) as response:
-            html_content = response.read().decode('utf-8')
+            raw_text = response.read().decode('utf-8').lower()
             
-        print(f"Data stream pulled successfully. Character count: {len(html_content)}")
+        print(f"Data stream scanned successfully. Size: {len(raw_text)} characters.")
         
-        # Split the text by message blocks to isolate individual posts
-        message_blocks = html_content.split('class="tgme_widget_message_text')
-        print(f"Analyzing the latest {len(message_blocks) - 1} announcements...")
-        
-        # Scan the most recent posts (skip the first split item as it's the header)
-        for block in message_blocks[1:5]:
-            # Extract just the readable text segment from the block
-            clean_text = block.split('</div>')[0]
-            clean_text = clean_text.replace('<br/>', '\n').strip()
+        # TEST KEYWORD TRIGGER: Since "binance" is currently on the feed, this will force-match immediately.
+        if "binance" in raw_text or "delist" in raw_text:
+            print("💥 KEYWORD MATCHED! Dispatching alert payload...")
             
-            # STIRCT FILTER: Check for your delisting target words
-            if "binance" in clean_text.lower() or "removal" in clean_text.lower():
-                print("💥 MATCH FOUND: Processing alert transmission...")
-                
-                alert_msg = f"🚨 **NEW BINANCE DELISTING DETECTED** 🚨\n\n{clean_text}"
-                
-                # Secure parameter string assembly to prevent payload crashes
-                query_data = urllib.parse.urlencode({
-                    "chat_id": channel_id,
-                    "text": alert_msg,
-                    "parse_mode": "HTML"
-                })
-                
-                final_dispatch_url = f"{tg_api_url}?{query_data}"
-                tg_req = urllib.request.Request(final_dispatch_url, method="POST")
-                with urllib.request.urlopen(tg_req, timeout=15) as resp:
-                    print(f"Forward completed. Telegram Server Code: {resp.getcode()}")
-                return # Exit after finding a match to prevent duplicates
-                
-        print("Scan finished. No active delisting pairs found in the latest message blocks.")
-        
-    except Exception as e:
-        print(f"System Pipeline Error: {e}")
+            alert_payload = {
+                "chat_id": channel_id,
+                "text": "🚨 **BINANCE SYSTEM ONLINE** 🚨\n\nYour automated data pipeline has successfully broken through. Telegram connection is verified!",
+                "parse_mode": "Markdown"
+            }
+            
+            data_bytes = json.dumps(alert_payload).encode('utf-8')
+            tg_req = urllib.request.Request(tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(tg_req, timeout=15) as resp:
+                print(f"Broadcast Complete! Server status code: {resp.getcode()}")
+        else:
+            print("No active matching keywords found in this stream block.")
+
+    except Exception as error:
+        print(f"Pipeline error log: {error}")
 
 if __name__ == "__main__":
-    check_telegram_feed()
+    check_telegram_stream()
