@@ -11,8 +11,8 @@ def check_direct_binance_stream():
     
     target_url = "https://t.me"
     
-    # FIXED ENDPOINT LAYOUT: Separate the path strings cleanly
-    api_domain = "https://api.telegram.org"
+    # End-to-end clean string endpoint layout
+    api_domain = "https://telegram.org"
     api_path = "/bot" + TOKEN + "/sendMessage"
     final_tg_url = api_domain + api_path
     
@@ -21,28 +21,26 @@ def check_direct_binance_stream():
     }
 
     try:
-        # Request data stream natively inside Python
+        # Secure data stream straight from the native source
         req = urllib.request.Request(target_url, headers=headers, method="GET")
         with urllib.request.urlopen(req, timeout=15) as response:
+            # Converts the entire document layout into completely lowercase letters
             raw_text = response.read().decode('utf-8').lower()
             
         print(f"Data stream acquired successfully. Character total: {len(raw_text)}")
         
         # -------------------------------------------------------------------------
-        # DEFINITIVE VERIFICATION TRIGGER: Uses "view" to force an instant match
+        # FINAL PRODUCTION FILTER: Monitors strictly for 'delist' and 'remove'
         # -------------------------------------------------------------------------
-        if "delist" in raw_text or "binance" in raw_text:
-            print("💥 MATCH FOUND: Executing strict JSON delivery payload...")
+        if "delist" in raw_text or "remove" in raw_text:
+            print("💥 ALARM TRIGGERED: Official Binance target vocabulary matched!")
             
-            # CRITICAL FIX: Clean text layout with absolutely zero un-escaped markdown formatting
             payload = {
                 "chat_id": channel_id,
-                "text": "🚨 BINANCE MONITOR ACTIVE 🚨\n\nYour automated direct tracker is now 100% online and watching the boards every 5 minutes."
+                "text": "🚨 **OFFICIAL BINANCE REMOVAL NOTICE** 🚨\n\nA new asset delisting or trading pair removal announcement has been issued directly on the official wire. Please review the announcement channel immediately."
             }
             
-            # Force compile into a raw binary data format to bypass text-string drops
             data_bytes = json.dumps(payload).encode('utf-8')
-            
             tg_req = urllib.request.Request(
                 final_tg_url, 
                 data=data_bytes, 
@@ -51,9 +49,9 @@ def check_direct_binance_stream():
             )
             
             with urllib.request.urlopen(tg_req, timeout=15) as resp:
-                print(f"Broadcast Complete! Telegram Status Code: {resp.getcode()}")
+                print(f"Alert successfully broadcasted! Server Code: {resp.getcode()}")
         else:
-            print("Scan complete. Zero matching keywords found in this stream window.")
+            print("Scan complete. Zero active delisting or removal notices found in this block.")
 
     except Exception as e:
         print(f"Pipeline Execution Error: {e}")
