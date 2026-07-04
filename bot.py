@@ -23,7 +23,7 @@ def check_binance_delistings():
             title_lower = title.lower()
             
             # STRICT FILTER: Check if it's a delisting notice
-            if "binance" in title_lower or "removal of trading pairs" in title_lower:
+            if "Binance" in title_lower or "removal of trading pairs" in title_lower:
                 message = f"🚨 **BINANCE DELISTING ALERT** 🚨\n\n{title}\n\n🔗 {link}"
                 send_telegram_message(message)
                 print(f"Match found and sent: {title}")
