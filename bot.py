@@ -10,15 +10,19 @@ def check_direct_binance_stream():
     channel_id = "-1003704962476"
     
     # Target endpoint definitions
-    target_url = "https://t.me/s/binance_announcements"
-    tg_url = f"https://telegram.org{TOKEN}/sendMessage"
+    target_url = "https://t.me"
+    
+    # SAFE STRING SEPARATION: Prevents Python's URL parsing engine from crashing on colons
+    api_domain = "https://telegram.org"
+    api_path = "/bot" + TOKEN + "/sendMessage"
+    final_tg_url = api_domain + api_path
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 
     try:
-        # Request data stream natively inside Python to eliminate broken pipe errors
+        # Request data stream natively inside Python
         req = urllib.request.Request(target_url, headers=headers, method="GET")
         with urllib.request.urlopen(req, timeout=15) as response:
             raw_text = response.read().decode('utf-8').lower()
@@ -38,7 +42,7 @@ def check_direct_binance_stream():
             }
             
             data_bytes = json.dumps(payload).encode('utf-8')
-            tg_req = urllib.request.Request(tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
+            tg_req = urllib.request.Request(final_tg_url, data=data_bytes, headers={"Content-Type": "application/json"}, method="POST")
             
             with urllib.request.urlopen(tg_req, timeout=15) as resp:
                 print(f"Broadcast Complete! Telegram Status Code: {resp.getcode()}")
