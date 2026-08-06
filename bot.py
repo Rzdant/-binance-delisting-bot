@@ -55,7 +55,7 @@ def check_direct_binance_stream():
         with open(state_file, "w") as f:
             f.write(latest_msg_id)
 
-        if "delist" in latest_msg_text_lower or "remove" in latest_msg_text_lower:
+        if "binance" in latest_msg_text_lower or "remove" in latest_msg_text_lower:
             trigger_alert(final_tg_url, channel_id)
         else:
             print(f"New post found (ID {latest_msg_id}), but no keywords matched. Skipping alert.")
