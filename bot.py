@@ -7,7 +7,8 @@ def check_direct_binance_stream():
     print("🚀 Connecting natively to Binance Telegram Web Preview...")
     
     TOKEN = "8969427446:AAFXHvaggfzAJzV2B1pTKc-vWH7u-w5HaXM"
-    channel_id = "@del_bin_phy"
+    channel_id = "@binance_delist_alerts"  # Put your new handle here
+
     
     # Target the clean public web-history preview
     binance_channel_handle = "binance_announcements" 
